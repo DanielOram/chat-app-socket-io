@@ -4,6 +4,10 @@ var http = require('http').Server(app);
 //initialises a new instance of socket.io by passing the http object
 var io = require('socket.io')(http);
 
+// set the port of our application
+// process.env.PORT lets the port be set by Heroku
+var port = process.env.PORT || 8080;
+
 //add static route in server that fetches files from ./node_modules/bootstrap/dist/
 var express = require("express");
 app.use('/scripts', express.static(__dirname + '/node_modules/bootstrap/dist/'));
