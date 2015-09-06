@@ -43,6 +43,9 @@ io.on('connection', function(socket){
 
 });
 
+//this might be causing error with heroku deployment? use only for local testing
+/*
 http.listen(3000, function(){
 	console.log('listening on *3000');
 });
+*/
