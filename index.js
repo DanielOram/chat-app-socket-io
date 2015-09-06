@@ -5,8 +5,8 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
 // set the port of our application
-// process.env.PORT lets the port be set by Heroku
-var port = process.env.PORT || 8080;
+// process.env.PORT lets the port be set by Heroku -> not needed?
+//var port = process.env.PORT || 8080;
 
 //add static route in server that fetches files from ./node_modules/bootstrap/dist/
 var express = require("express");
