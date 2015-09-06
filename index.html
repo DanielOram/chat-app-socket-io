@@ -1,0 +1,176 @@
+<!doctype html>
+<html>
+  <head>
+	  <meta name="viewport" content="width=device-width, initial-scale=1">
+	  
+	  <!-- Latest compiled and minified CSS -->
+	  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+	  <!-- link to use font-awesome glyphs-->
+	  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+	  
+	  <!-- JQuery -->
+	  <!--<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>-->
+	  <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+	  
+	  <!-- Latest compiled and minified JavaScript -->
+	  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	  
+	  <!-- load socket.io client to expose global io object and then connect.
+	  	 send form data on submit-->
+		  
+		  
+		  <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+		  
+		  
+
+
+
+	  
+	  <title>Socket.IO chat</title>
+
+
+  </head>
+  <body>
+
+  <script>
+	  $(document).ready(function () {
+
+		  //resizing message board
+		  function myFunction() {
+			  var w = window.innerWidth*0.4;
+			  var h = window.innerHeight*0.4;
+			  $('.panel-body#message-board').attr('style', 'height:'+h+'px; max-height: '+h+'px; overflow: scroll');
+		  }
+		  myFunction();
+
+		  //string formatting function
+		  String.prototype.format = String.prototype.f = function() {
+			  var s = this,
+					  i = arguments.length;
+
+			  while (i--) {
+				  s = s.replace(new RegExp('\\{' + i + '\\}', 'gm'), arguments[i]);
+			  }
+			  return s;
+		  };
+
+
+		  var username = 'Joe Bloggs';
+		  var socket = io();
+		  username = prompt("Enter a username", "Joe Bloggs");
+		  $('#username-span').text(username);
+		  $('form').submit(function () {
+			  if ( $.trim( $('#m').val() ) != '' ){
+				  socket.emit('chat message', {message: $('#m').val(), name: username });
+			  }
+			  $('#m').val('');
+			  return false;
+		  });
+		  <!--add messages to page -->
+		  socket.on('chat message',  function (data) {
+			  if(data['name'] == username) {
+				  $('#messages').append($('<li class="list-group-item" style="background: #eee; color: #783F7B;">').text("{0}: {1}".f(data['name'], data['message'])));
+				  //$($('<span class=" fa fa-comment fa-2x">')).appendTo('#messages');
+			  } else {
+				  $('#messages').append($('<li class="list-group-item not-my-message">').text("{0}: {1}".f(data['name'], data['message'])));
+			  }
+		  });
+	  });
+
+  </script><!-- socket.io client side processor -->
+  <nav class="navbar navbar-default">
+	  <div class="container-fluid">
+		  <!-- Brand and toggle get grouped for better mobile display -->
+		  <div class="navbar-header">
+			  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+				  <span class="sr-only">Toggle navigation</span>
+				  <span class="icon-bar"></span>
+				  <span class="icon-bar"></span>
+				  <span class="icon-bar"></span>
+			  </button>
+			  <!--<a class="navbar-brand" href="#">Daniel Oram</a>-->
+		  </div>
+
+		  <!-- Collect the nav links, forms, and other content for toggling -->
+		  <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			  <ul class="nav navbar-nav">
+				  <button type="button" class="btn btn-default navbar-btn"><h4><a  href="https://danieloramdesigner.wordpress.com/">Daniel Oram</a></h4></button>
+				  <button type="button" class="btn btn-default navbar-btn"><li><a href="https://twitter.com/@theRealDANORAM" title="My Twitter" target="_blank" class="btn btn-twitter fa fa-twitter fa-2x"></i></a></li></button>
+				  <button type="button" class="btn btn-default navbar-btn"><li><a href="https://plus.google.com/114640876967808622511/posts" title="My Google+" target="_blank" class="btn btn-twitter fa fa-google fa-2x"></i></a></li></button>
+				  <button type="button" class="btn btn-default navbar-btn"><li><a href="https://nz.linkedin.com/in/danieloram1" title="My Linkedin" target="_blank" class="btn btn-twitter fa fa-linkedin fa-2x"></i></a></li></button>
+
+
+			  </ul>
+
+			  <ul class="nav navbar-nav navbar-right">
+				  <li class="dropdown">
+					  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Share! <span class="caret"></span></a>
+					  <ul class="dropdown-menu">
+						  <li><a href="http://twitter.com/home?status=" title="Share on Twitter" target="_blank" class="btn btn-twitter fa fa-twitter"></i> Share</a></li>
+						  <li role="separator" class="divider"></li>
+						  <li><a href="http://twitter.com/home?status=" title="Share on Twitter" target="_blank" class="btn btn-facebook fa fa-facebook"></i> Share</a></li>
+						  <li role="separator" class="divider"></li>
+						  <li><a href="http://twitter.com/home?status=" title="Share on Google" target="_blank" class="btn btn-google fa fa-google"></i> Share</a></li>
+					  </ul>
+				  </li>
+			  </ul>
+		  </div><!-- /.navbar-collapse -->
+	  </div><!-- /.container-fluid -->
+  </nav>
+
+
+	<div class="container-full">
+		<div class="row" style="background-color: #783F7B">
+
+			<div class="col-lg-12 text-center v-center">
+
+				<h1 style="color: #e5e5e5">Daniel Oram's Chat App</h1>
+				<p class="lead" style="color: #cabfcd">A Nodejs application that uses Socket.io for realtime chat!</p>
+
+				<br>
+
+				<form class="col-md-12">
+
+					<div class="input-group input-group-lg">
+						<span class="input-group-addon" id="sizing-addon1"><span class="glyphicon glyphicon-comment" aria-hidden="true"></span></span>
+						<span class="input-group-addon" id="sizing-addon2"><span id="username-span"></span></span>
+						<input id="m" autocomplete="off" type="text" class="form-control input-lg" placeholder="Type a message here..." aria-describedby="sizing-addon1">
+						<span class="input-group-btn"><button class="btn btn-lg btn-primary" type="button">Enter</button></span>
+					</div>
+				</form>
+			</div>
+		</div> <!-- /row -->
+		<div style="height: 20px; width: inherit; background-color: #783F7B"></div>
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="panel panel-default">
+					<div class="panel-heading"><span><span>Chat Board</span></span>
+					</div>
+					<div class="panel-body" id="message-board" style="overflow: scroll">
+						<ul id="messages" class="list-group"></ul>
+					</div>
+				</div>
+			</div>
+		</div><!-- /row -->
+		<div id="footer" style="background-color: #783F7B; color: #cccccc;">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12">
+						<br><br>
+						<p> &nbsp; ©Copyright 2015 Daniel Oram</p>
+						<br><br>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div> <!-- /container full -->
+
+
+
+
+
+	
+  </body>
+</html>
